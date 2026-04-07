@@ -4,13 +4,13 @@
     <title>MineBar</title>
     <item>
       <title>Version 1.0</title>
-      <sparkle:version>1</sparkle:version>
+      <sparkle:version>1.0</sparkle:version>
       <sparkle:shortVersionString>1.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <enclosure
         url="https://github.com/ciruz/minebar/releases/download/v1.0/MineBar.zip"
-        sparkle:edSignature="PLACEHOLDER"
-        length="0"
+        sparkle:edSignature="UVQUsQnK7hMhxgTeOqXkZQW9R7HUPvnuWF8ra1aQgy43iSBVTkyu20g6D+LbIdIVWb6vcuJlnMQxb9ohe3jdDQ=="
+        length="1713979"
         type="application/octet-stream"/>
     </item>
   </channel>
