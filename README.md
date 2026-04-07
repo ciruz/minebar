@@ -28,6 +28,14 @@ Other devices using AxeOS or CGMiner may work too.
 
 ## Install
 
+**Homebrew:**
+
+```bash
+brew install --cask ciruz/tap/minebar
+```
+
+**Manual:**
+
 1. Download the latest `.zip` from [Releases](https://github.com/ciruz/minebar/releases)
 2. Unzip and move `MineBar.app` to `/Applications`
 3. Open normally, the app is signed and notarized
