@@ -55,13 +55,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
 
-        // Observe miners changes for title sync (frozen while popover is open)
+        // Observe miners and settings changes for title sync (frozen while popover is open)
+        let settings = SettingsStore.shared
         titleObservationTask = Task { [weak self] in
             while !Task.isCancelled {
                 guard let self else { return }
                 await withCheckedContinuation { continuation in
                     withObservationTracking {
                         _ = self.viewModel.miners
+                        _ = settings.showHashrateInBar
+                        _ = settings.showPowerInBar
                     } onChange: {
                         continuation.resume()
                     }

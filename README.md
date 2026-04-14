@@ -60,8 +60,10 @@ Polling interval (5s - 60s), launch at login, and notification thresholds are in
 The menu bar shows a pickaxe icon with your fleet's total hashrate and power:
 
 ```
-⛏ 1.2 TH/s - 45.0W
+⛏ 1.2 TH/s | 14.6W
 ```
+
+You can toggle which values appear in the status bar (Hashrate, Power) in Settings.
 
 Click to open the popover with per-device stats. Click a device row for detailed info including pool, shares, uptime, ASIC model, firmware, and more.
 

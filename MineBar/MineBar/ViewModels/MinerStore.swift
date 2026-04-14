@@ -59,7 +59,15 @@ final class MinerStore {
     var menuBarTitle: String {
         guard !miners.isEmpty else { return "⛏ No Devices" }
         guard onlineCount > 0 else { return "⛏ Offline" }
-        return "⛏ \(SystemInfo.formatHashrate(totalHashrate)) - \(String(format: "%.1fW", totalPower))"
+        var parts: [String] = []
+        if settings.showHashrateInBar {
+            parts.append(SystemInfo.formatHashrate(totalHashrate))
+        }
+        if settings.showPowerInBar {
+            parts.append(String(format: "%.1fW", totalPower))
+        }
+        if parts.isEmpty { return "⛏" }
+        return "⛏ \(parts.joined(separator: " | "))"
     }
 
     init() {

@@ -48,7 +48,7 @@ struct SettingsView: View {
             }
             .frame(maxHeight: .infinity, alignment: .top)
         }
-        .frame(width: 360, height: 420)
+        .frame(width: 360, height: 430)
     }
 }
 
@@ -109,6 +109,13 @@ struct GeneralSettingsTab: View {
                 }
             } header: {
                 Text("Monitoring")
+            }
+
+            Section {
+                Toggle("Hashrate", isOn: $settings.showHashrateInBar)
+                Toggle("Power", isOn: $settings.showPowerInBar)
+            } header: {
+                Text("Status Bar")
             }
         }
         .formStyle(.grouped)
