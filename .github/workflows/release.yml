@@ -37,6 +37,13 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Increment build number
+        run: |
+          set -euo pipefail
+          cd MineBar
+          xcrun agvtool next-version -all
+          echo "New build number: $(xcrun agvtool what-version -terse)"
+
       - name: Import Developer ID certificate
         env:
           CERTIFICATE_P12: ${{ secrets.CERTIFICATE_P12 }}
@@ -177,10 +184,18 @@ jobs:
           echo "ED_SIGNATURE=$ED_SIGNATURE" >> "$GITHUB_ENV"
           echo "FILE_SIZE=$LENGTH" >> "$GITHUB_ENV"
 
+      - name: Extract build number from Xcode project
+        id: buildnumber
+        run: |
+          set -euo pipefail
+          BUILD_NUMBER="$(sed -n 's/.*CURRENT_PROJECT_VERSION = \([^;]*\);/\1/p' "$PROJECT/project.pbxproj" | head -n 1 | tr -d ' ')"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+
       - name: Update appcast.xml
         env:
           VERSION: ${{ steps.version.outputs.version }}
           TAG: ${{ steps.version.outputs.tag }}
+          BUILD_NUMBER: ${{ steps.buildnumber.outputs.build_number }}
         run: |
           set -euo pipefail
           python3 <<'PY'
@@ -189,6 +204,7 @@ jobs:
 
           version = os.environ["VERSION"]
           tag = os.environ["TAG"]
+          build_number = os.environ["BUILD_NUMBER"]
           ed_signature = os.environ["ED_SIGNATURE"]
           file_size = os.environ["FILE_SIZE"]
 
@@ -198,7 +214,7 @@ jobs:
           content = re.sub(r"<title>Version [^<]*</title>",
                            f"<title>Version {version}</title>", content, count=1)
           content = re.sub(r"<sparkle:version>[^<]*</sparkle:version>",
-                           f"<sparkle:version>{version}</sparkle:version>", content, count=1)
+                           f"<sparkle:version>{build_number}</sparkle:version>", content, count=1)
           content = re.sub(r"<sparkle:shortVersionString>[^<]*</sparkle:shortVersionString>",
                            f"<sparkle:shortVersionString>{version}</sparkle:shortVersionString>", content, count=1)
           content = re.sub(r'url="[^"]*"',
@@ -213,16 +229,16 @@ jobs:
               f.write(content)
           PY
 
-      - name: Commit updated appcast.xml
+      - name: Commit updated appcast.xml and build number
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add appcast.xml
+          git add appcast.xml MineBar/MineBar.xcodeproj/project.pbxproj
           if git diff --cached --quiet; then
-            echo "No appcast.xml changes to commit"
+            echo "No changes to commit"
           else
-            git commit -m "chore: update appcast.xml for ${{ steps.version.outputs.tag }}"
+            git commit -m "chore: update appcast.xml and build number for ${{ steps.version.outputs.tag }}"
             git push origin HEAD:main
           fi
 
